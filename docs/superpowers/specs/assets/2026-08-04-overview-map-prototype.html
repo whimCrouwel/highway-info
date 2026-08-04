@@ -1,0 +1,606 @@
+<title>高速道路路線図プロトタイプ</title>
+<style>
+  /* shadcn/ui default ("zinc") theme tokens — same HSL values as ui.shadcn.com,
+     hand-rolled in plain CSS since Artifacts can't load Tailwind/Radix from a CDN. */
+  :root{
+    --background: 0 0% 100%;
+    --foreground: 240 10% 3.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 3.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 3.9%;
+    --primary: 240 5.9% 10%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 240 4.8% 95.9%;
+    --secondary-foreground: 240 5.9% 10%;
+    --muted: 240 4.8% 95.9%;
+    --muted-foreground: 240 3.8% 46.1%;
+    --accent: 240 4.8% 95.9%;
+    --accent-foreground: 240 5.9% 10%;
+    --border: 240 5.9% 90%;
+    --input: 240 5.9% 90%;
+    --ring: 240 5.9% 10%;
+    --radius: 0.5rem;
+
+    --route-e8:#2E6F53;
+    --route-e18:#2A5F8F;
+    --route-e19:#A6461F;
+    --route-e67:#6B4A8A;
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    --font-ui: ui-sans-serif, system-ui, -apple-system, "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic Medium", "Noto Sans JP", "Segoe UI", sans-serif;
+    --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --background: 240 10% 3.9%;
+      --foreground: 0 0% 98%;
+      --card: 240 10% 3.9%;
+      --card-foreground: 0 0% 98%;
+      --popover: 240 10% 3.9%;
+      --popover-foreground: 0 0% 98%;
+      --primary: 0 0% 98%;
+      --primary-foreground: 240 5.9% 10%;
+      --secondary: 240 3.7% 15.9%;
+      --secondary-foreground: 0 0% 98%;
+      --muted: 240 3.7% 15.9%;
+      --muted-foreground: 240 5% 64.9%;
+      --accent: 240 3.7% 15.9%;
+      --accent-foreground: 0 0% 98%;
+      --border: 240 3.7% 15.9%;
+      --input: 240 3.7% 15.9%;
+      --ring: 240 4.9% 83.9%;
+      --route-e8:#4F9B79;
+      --route-e18:#5B96C9;
+      --route-e19:#D97A4E;
+      --route-e67:#9B7FC2;
+      --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.4);
+      --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.45), 0 2px 4px -2px rgb(0 0 0 / 0.4);
+    }
+  }
+  :root[data-theme="dark"]{
+    --background: 240 10% 3.9%; --foreground: 0 0% 98%; --card: 240 10% 3.9%; --card-foreground: 0 0% 98%;
+    --popover: 240 10% 3.9%; --popover-foreground: 0 0% 98%; --primary: 0 0% 98%; --primary-foreground: 240 5.9% 10%;
+    --secondary: 240 3.7% 15.9%; --secondary-foreground: 0 0% 98%; --muted: 240 3.7% 15.9%; --muted-foreground: 240 5% 64.9%;
+    --accent: 240 3.7% 15.9%; --accent-foreground: 0 0% 98%; --border: 240 3.7% 15.9%; --input: 240 3.7% 15.9%; --ring: 240 4.9% 83.9%;
+    --route-e8:#4F9B79; --route-e18:#5B96C9; --route-e19:#D97A4E; --route-e67:#9B7FC2;
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.4); --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.45), 0 2px 4px -2px rgb(0 0 0 / 0.4);
+  }
+  :root[data-theme="light"]{
+    --background: 0 0% 100%; --foreground: 240 10% 3.9%; --card: 0 0% 100%; --card-foreground: 240 10% 3.9%;
+    --popover: 0 0% 100%; --popover-foreground: 240 10% 3.9%; --primary: 240 5.9% 10%; --primary-foreground: 0 0% 98%;
+    --secondary: 240 4.8% 95.9%; --secondary-foreground: 240 5.9% 10%; --muted: 240 4.8% 95.9%; --muted-foreground: 240 3.8% 46.1%;
+    --accent: 240 4.8% 95.9%; --accent-foreground: 240 5.9% 10%; --border: 240 5.9% 90%; --input: 240 5.9% 90%; --ring: 240 5.9% 10%;
+    --route-e8:#2E6F53; --route-e18:#2A5F8F; --route-e19:#A6461F; --route-e67:#6B4A8A;
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05); --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  }
+
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    font-family:var(--font-ui);
+    background:hsl(var(--background));
+    color:hsl(var(--foreground));
+    min-height:100vh;
+  }
+  .app{
+    max-width:1180px;
+    margin:0 auto;
+    padding:28px 20px 64px;
+    display:flex;
+    flex-direction:column;
+    gap:20px;
+  }
+
+  .topbar{
+    display:flex;
+    flex-wrap:wrap;
+    align-items:baseline;
+    justify-content:space-between;
+    gap:12px 24px;
+    border-bottom:1px solid hsl(var(--border));
+    padding-bottom:16px;
+  }
+  .topbar h1{
+    font-size:20px;
+    font-weight:600;
+    margin:0;
+    letter-spacing:-0.01em;
+  }
+  .topbar .eyebrow{
+    display:block;
+    font-size:11px;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    color:hsl(var(--muted-foreground));
+    margin-bottom:4px;
+  }
+  .area-select{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    font-size:13px;
+    color:hsl(var(--muted-foreground));
+  }
+  /* shadcn Select trigger */
+  .select-trigger{
+    display:inline-flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:8px;
+    height:36px;
+    font-family:var(--font-ui);
+    font-size:13px;
+    color:hsl(var(--foreground));
+    background:hsl(var(--background));
+    border:1px solid hsl(var(--input));
+    border-radius:calc(var(--radius) - 2px);
+    padding:0 10px 0 12px;
+    box-shadow:var(--shadow-sm);
+    position:relative;
+  }
+  .select-trigger select{
+    appearance:none;
+    -webkit-appearance:none;
+    background:transparent;
+    border:none;
+    font:inherit;
+    color:inherit;
+    padding-right:18px;
+    cursor:pointer;
+  }
+  .select-trigger svg{ width:14px; height:14px; color:hsl(var(--muted-foreground)); pointer-events:none; margin-left:-16px; }
+  .select-trigger:has(select:focus-visible){
+    outline:none;
+    box-shadow:0 0 0 2px hsl(var(--background)), 0 0 0 4px hsl(var(--ring));
+  }
+
+  .layout{
+    display:grid;
+    grid-template-columns:1fr 240px;
+    gap:20px;
+    align-items:start;
+  }
+  @media (max-width:760px){
+    .layout{ grid-template-columns:1fr; }
+  }
+
+  /* shadcn Card */
+  .canvas-card{
+    background:hsl(var(--card));
+    color:hsl(var(--card-foreground));
+    border:1px solid hsl(var(--border));
+    border-radius:var(--radius);
+    box-shadow:var(--shadow-sm);
+    padding:8px;
+    position:relative;
+  }
+  svg{ display:block; width:100%; height:auto; }
+
+  .route-line{
+    cursor:pointer;
+    transition:opacity 0.15s ease;
+  }
+  .route-hit{
+    cursor:pointer;
+    fill:none;
+    stroke:transparent;
+    stroke-width:22;
+  }
+  @media (prefers-reduced-motion: reduce){
+    .route-line{ transition:none; }
+  }
+  .route-line.dim{ opacity:0.22; }
+
+  .badge-bg{ transition:opacity 0.15s ease; }
+  .badge-bg.dim{ opacity:0.22; }
+  /* shadcn Badge: font-sans, semibold, xs */
+  .badge-label{
+    font-family:var(--font-ui);
+    font-weight:600;
+    fill:#fff;
+    transition:opacity 0.15s ease;
+  }
+  .badge-label.dim{ opacity:0.22; }
+
+  .node-jct circle{ fill:hsl(var(--card)); stroke:hsl(var(--foreground)); stroke-width:2.5; }
+  .node-endpoint circle{ fill:hsl(var(--card)); stroke:hsl(var(--foreground)); stroke-width:2.5; }
+  .node-label{
+    font-size:13px;
+    font-weight:600;
+    fill:hsl(var(--foreground));
+  }
+
+  .node-ic circle, .node-sapa circle{
+    fill:hsl(var(--card));
+    stroke:hsl(var(--muted-foreground));
+    stroke-width:1.5;
+    cursor:pointer;
+  }
+  .node-sapa circle{ fill:hsl(var(--muted)); stroke:hsl(var(--muted-foreground)); }
+  .node-ic:hover circle, .node-sapa:hover circle{ stroke:hsl(var(--ring)); stroke-width:2.5; }
+  .node-ic:focus-visible circle, .node-sapa:focus-visible circle{ outline:none; stroke:hsl(var(--ring)); stroke-width:2.5; }
+  g[tabindex]{ outline:none; }
+
+  .direction-tag{ cursor:default; }
+  .direction-tag text{
+    font-size:11px;
+    font-weight:600;
+    fill:hsl(var(--muted-foreground));
+    font-family:var(--font-ui);
+  }
+  .direction-tag path{ fill:hsl(var(--muted-foreground)); }
+
+  /* shadcn Popover/Tooltip */
+  .tooltip{
+    position:absolute;
+    max-width:200px;
+    background:hsl(var(--popover));
+    color:hsl(var(--popover-foreground));
+    border:1px solid hsl(var(--border));
+    border-radius:calc(var(--radius) - 2px);
+    padding:8px 12px;
+    font-size:13px;
+    line-height:1.45;
+    box-shadow:var(--shadow-md);
+    pointer-events:none;
+    opacity:0;
+    transform:translate(-50%, calc(-100% - 12px)) scale(0.96);
+    transition:opacity 0.12s ease, transform 0.12s ease;
+    z-index:10;
+  }
+  @media (prefers-reduced-motion: reduce){ .tooltip{ transition:none; } }
+  .tooltip.visible{ opacity:1; transform:translate(-50%, calc(-100% - 12px)) scale(1); }
+  .tooltip .tt-name{ font-weight:600; margin-bottom:2px; }
+  .tooltip .tt-meta{ color:hsl(var(--muted-foreground)); font-size:11px; }
+  .tooltip::after{
+    content:"";
+    position:absolute;
+    left:50%; bottom:-5px;
+    width:9px; height:9px;
+    background:hsl(var(--popover));
+    border-right:1px solid hsl(var(--border));
+    border-bottom:1px solid hsl(var(--border));
+    transform:translateX(-50%) rotate(45deg);
+  }
+
+  /* shadcn Card, housing a list of outline Buttons */
+  .legend{
+    background:hsl(var(--card));
+    color:hsl(var(--card-foreground));
+    border:1px solid hsl(var(--border));
+    border-radius:var(--radius);
+    box-shadow:var(--shadow-sm);
+    padding:16px;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+  }
+  .legend h2{
+    font-size:11px;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    color:hsl(var(--muted-foreground));
+    margin:0 0 2px;
+    font-weight:600;
+  }
+  /* shadcn Button variant="outline" size="sm", stretched full-width */
+  .legend-chip{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    width:100%;
+    height:36px;
+    border:1px solid hsl(var(--border));
+    background:hsl(var(--background));
+    border-radius:calc(var(--radius) - 2px);
+    padding:0 10px;
+    font-family:var(--font-ui);
+    font-size:13px;
+    font-weight:500;
+    color:hsl(var(--foreground));
+    cursor:pointer;
+    text-align:left;
+    transition:background 0.15s ease, border-color 0.15s ease;
+  }
+  @media (prefers-reduced-motion: reduce){ .legend-chip{ transition:none; } }
+  .legend-chip:hover{ background:hsl(var(--accent)); color:hsl(var(--accent-foreground)); }
+  .legend-chip:focus-visible{ outline:none; box-shadow:0 0 0 2px hsl(var(--background)), 0 0 0 4px hsl(var(--ring)); }
+  .legend-chip.active{ border-color:hsl(var(--foreground)); background:hsl(var(--accent)); }
+  .legend-chip .swatch{
+    width:10px; height:10px; border-radius:999px; flex:none;
+  }
+  .legend-chip .name{ flex:1; }
+  .legend-chip .code{
+    font-family:var(--font-mono);
+    font-size:11px;
+    font-weight:600;
+    color:hsl(var(--muted-foreground));
+  }
+  /* shadcn Button variant="link" */
+  .legend-reset{
+    font-size:12px;
+    font-weight:500;
+    color:hsl(var(--muted-foreground));
+    background:none;
+    border:none;
+    text-underline-offset:4px;
+    text-decoration:underline;
+    cursor:pointer;
+    padding:2px 0;
+    text-align:left;
+    font-family:var(--font-ui);
+  }
+  .legend-reset:hover{ color:hsl(var(--foreground)); }
+  .legend-reset:focus-visible{ outline:none; box-shadow:0 0 0 2px hsl(var(--background)), 0 0 0 4px hsl(var(--ring)); border-radius:2px; }
+
+  .legend-rule{
+    border:none;
+    border-top:1px solid hsl(var(--border));
+    margin:2px 0;
+  }
+  .legend-note{
+    font-size:12px;
+    color:hsl(var(--muted-foreground));
+    line-height:1.6;
+  }
+  .legend-note b{ color:hsl(var(--foreground)); }
+
+  .howto{
+    font-size:12.5px;
+    color:hsl(var(--muted-foreground));
+    line-height:1.7;
+    max-width:60ch;
+  }
+</style>
+
+<div class="app">
+  <div class="topbar">
+    <div>
+      <span class="eyebrow">高速道路情報アプリ &mdash; デザインプロトタイプ</span>
+      <h1>路線図ビュー（模式図）</h1>
+    </div>
+    <div class="area-select">
+      <label for="area">エリア</label>
+      <div class="select-trigger">
+        <select id="area">
+          <option>北陸・信越</option>
+          <option disabled>北海道（準備中）</option>
+          <option disabled>東北（準備中）</option>
+          <option disabled>関東（準備中）</option>
+          <option disabled>東海（準備中）</option>
+          <option disabled>関西（準備中）</option>
+        </select>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+      </div>
+    </div>
+  </div>
+
+  <p class="howto">実際の地形ではなく、路線図のようにデフォルメして表示しています。<b>JCTと路線の端点</b>は常時ラベル表示。<b>IC・SA/PA</b>は点のみで、タップすると名称が出ます。路線（線または右のリスト）をタップするとその路線だけハイライトします。</p>
+
+  <div class="layout">
+    <div class="canvas-card">
+      <svg viewBox="0 0 760 520" role="img" aria-label="北陸・信越エリアの高速道路模式図">
+
+        <!-- E19 長野道: 更埴JCT -> 岡谷JCT -->
+        <path class="route-line" data-route="e19" d="M 380 260 L 380 430" stroke="var(--route-e19)" stroke-width="7" stroke-linecap="round" fill="none"></path>
+        <path class="route-hit" data-route="e19" d="M 380 260 L 380 430"></path>
+
+        <!-- E18 上信越道: 上越JCT -> 更埴JCT -> 藤岡JCT -->
+        <path class="route-line" data-route="e18" d="M 120 130 L 380 260 L 640 150" stroke="var(--route-e18)" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" fill="none"></path>
+        <path class="route-hit" data-route="e18" d="M 120 130 L 380 260 L 640 150"></path>
+
+        <!-- E8 北陸道 stub: 上越JCT -> off-canvas left -->
+        <path class="route-line" data-route="e8" d="M 120 130 L 30 70" stroke="var(--route-e8)" stroke-width="7" stroke-linecap="round" fill="none"></path>
+        <path class="route-hit" data-route="e8" d="M 120 130 L 30 70"></path>
+
+        <!-- E67 安房峠道路 stub: 岡谷JCT -> off-canvas bottom-left, small branch -->
+        <path class="route-line" data-route="e67" d="M 380 430 L 300 490" stroke="var(--route-e67)" stroke-width="7" stroke-linecap="round" fill="none"></path>
+        <path class="route-hit" data-route="e67" d="M 380 430 L 300 490"></path>
+
+        <!-- route badges -->
+        <g class="badge" data-route="e8">
+          <rect class="badge-bg" x="48" y="82" width="42" height="22" rx="11" fill="var(--route-e8)"></rect>
+          <text class="badge-label" x="58" y="98" font-size="12">E8</text>
+        </g>
+        <g class="badge" data-route="e18">
+          <rect class="badge-bg" x="205" y="150" width="46" height="22" rx="11" fill="var(--route-e18)"></rect>
+          <text class="badge-label" x="215" y="166" font-size="12">E18</text>
+        </g>
+        <g class="badge" data-route="e18">
+          <rect class="badge-bg" x="480" y="175" width="46" height="22" rx="11" fill="var(--route-e18)"></rect>
+          <text class="badge-label" x="490" y="191" font-size="12">E18</text>
+        </g>
+        <g class="badge" data-route="e19">
+          <rect class="badge-bg" x="392" y="330" width="46" height="22" rx="11" fill="var(--route-e19)"></rect>
+          <text class="badge-label" x="402" y="346" font-size="12">E19</text>
+        </g>
+        <g class="badge" data-route="e67">
+          <rect class="badge-bg" x="298" y="452" width="52" height="22" rx="11" fill="var(--route-e67)"></rect>
+          <text class="badge-label" x="306" y="468" font-size="12">E67</text>
+        </g>
+
+        <!-- IC nodes (tap for tooltip) -->
+        <g class="node-ic" tabindex="0" role="button" aria-label="妙高高原IC 詳細を表示" data-name="妙高高原IC" data-meta="E18 上信越道 · IC" transform="translate(230,175)">
+          <circle r="6"></circle>
+        </g>
+        <g class="node-ic" tabindex="0" role="button" aria-label="佐久IC 詳細を表示" data-name="佐久IC" data-meta="E18 上信越道 · IC" transform="translate(500,200)">
+          <circle r="6"></circle>
+        </g>
+        <g class="node-ic" tabindex="0" role="button" aria-label="麻績IC 詳細を表示" data-name="麻績IC" data-meta="E19 長野道 · IC" transform="translate(380,345)">
+          <circle r="6"></circle>
+        </g>
+        <g class="node-ic" tabindex="0" role="button" aria-label="松本IC 詳細を表示" data-name="松本IC" data-meta="E19 長野道 · IC" transform="translate(380,385)">
+          <circle r="6"></circle>
+        </g>
+
+        <!-- SA/PA nodes -->
+        <g class="node-sapa" tabindex="0" role="button" aria-label="小布施PA 詳細を表示" data-name="小布施PA" data-meta="E18 上信越道 · PA" transform="translate(300,215)">
+          <circle r="4"></circle>
+        </g>
+        <g class="node-sapa" tabindex="0" role="button" aria-label="有明SA 詳細を表示" data-name="有明SA" data-meta="E19 長野道 · SA" transform="translate(380,410)">
+          <circle r="4"></circle>
+        </g>
+        <g class="node-sapa" tabindex="0" role="button" aria-label="松代PA 詳細を表示" data-name="松代PA" data-meta="E18 上信越道 · PA" transform="translate(430,220)">
+          <circle r="4"></circle>
+        </g>
+
+        <!-- JCT: 更埴JCT (always labeled) -->
+        <g class="node-jct">
+          <circle cx="380" cy="260" r="8"></circle>
+          <text class="node-label" x="392" y="256">更埴JCT</text>
+        </g>
+
+        <!-- Endpoints: always labeled -->
+        <g class="node-endpoint">
+          <circle cx="120" cy="130" r="7"></circle>
+          <text class="node-label" x="108" y="116">上越JCT</text>
+        </g>
+        <g class="node-endpoint">
+          <circle cx="640" cy="150" r="7"></circle>
+          <text class="node-label" x="600" y="136">藤岡JCT</text>
+        </g>
+        <g class="node-endpoint">
+          <circle cx="380" cy="430" r="7"></circle>
+          <text class="node-label" x="392" y="450">岡谷JCT</text>
+        </g>
+        <g class="node-endpoint">
+          <circle cx="30" cy="70" r="5"></circle>
+        </g>
+        <g class="node-endpoint">
+          <circle cx="300" cy="490" r="5"></circle>
+        </g>
+
+        <!-- Direction tags -->
+        <g class="direction-tag" transform="translate(58,58)">
+          <path d="M0,6 L6,6 L3,0 Z"></path>
+          <text x="9" y="9">上り</text>
+        </g>
+
+        <g class="direction-tag" transform="translate(78,132)">
+          <path d="M6,0 L6,6 L0,3 Z"></path>
+          <text x="9" y="9">下り</text>
+        </g>
+        <g class="direction-tag" transform="translate(560,134)">
+          <path d="M0,0 L6,3 L0,6 Z"></path>
+          <text x="9" y="9">上り</text>
+        </g>
+
+        <g class="direction-tag" transform="translate(392,300)">
+          <path d="M0,0 L6,0 L3,6 Z"></path>
+          <text x="9" y="9">上り</text>
+        </g>
+        <g class="direction-tag" transform="translate(322,466)">
+          <path d="M0,6 L6,6 L3,0 Z"></path>
+          <text x="9" y="9">下り</text>
+        </g>
+
+      </svg>
+
+      <div class="tooltip" id="tooltip">
+        <div class="tt-name" id="tt-name"></div>
+        <div class="tt-meta" id="tt-meta"></div>
+      </div>
+    </div>
+
+    <aside class="legend" aria-label="路線の一覧">
+      <h2>路線</h2>
+      <button class="legend-chip" data-route="e8">
+        <span class="swatch" style="background:var(--route-e8)"></span>
+        <span class="name">北陸道</span>
+        <span class="code">E8</span>
+      </button>
+      <button class="legend-chip" data-route="e18">
+        <span class="swatch" style="background:var(--route-e18)"></span>
+        <span class="name">上信越道</span>
+        <span class="code">E18</span>
+      </button>
+      <button class="legend-chip" data-route="e19">
+        <span class="swatch" style="background:var(--route-e19)"></span>
+        <span class="name">長野道</span>
+        <span class="code">E19</span>
+      </button>
+      <button class="legend-chip" data-route="e67">
+        <span class="swatch" style="background:var(--route-e67)"></span>
+        <span class="name">安房峠道路</span>
+        <span class="code">E67</span>
+      </button>
+      <button class="legend-reset" id="reset">すべて表示に戻す</button>
+      <hr class="legend-rule">
+      <p class="legend-note"><b>上り／下り</b>は路線ごとに向きが違うため、端点のそばに矢印付きで表示しています。</p>
+    </aside>
+  </div>
+</div>
+
+<script>
+  (function(){
+    var routes = ['e8','e18','e19','e67'];
+    var active = null;
+
+    function applyHighlight(){
+      routes.forEach(function(r){
+        var isDim = active !== null && active !== r;
+        document.querySelectorAll('[data-route="' + r + '"]').forEach(function(el){
+          if (el.classList.contains('route-line') || el.classList.contains('badge-bg') || el.classList.contains('badge-label')) {
+            el.classList.toggle('dim', isDim);
+          }
+        });
+      });
+      document.querySelectorAll('.legend-chip').forEach(function(chip){
+        chip.classList.toggle('active', chip.dataset.route === active);
+      });
+    }
+
+    function toggleRoute(r){
+      active = (active === r) ? null : r;
+      applyHighlight();
+    }
+
+    document.querySelectorAll('.route-hit').forEach(function(el){
+      el.addEventListener('click', function(){ toggleRoute(el.dataset.route); });
+    });
+    document.querySelectorAll('.legend-chip').forEach(function(el){
+      el.addEventListener('click', function(){ toggleRoute(el.dataset.route); });
+    });
+    document.getElementById('reset').addEventListener('click', function(){
+      active = null; applyHighlight();
+    });
+
+    // Node tooltips (IC / SA-PA)
+    var tooltip = document.getElementById('tooltip');
+    var ttName = document.getElementById('tt-name');
+    var ttMeta = document.getElementById('tt-meta');
+    var card = document.querySelector('.canvas-card');
+    var openNode = null;
+
+    function showTooltip(node){
+      var rect = node.getBoundingClientRect();
+      var cardRect = card.getBoundingClientRect();
+      ttName.textContent = node.dataset.name;
+      ttMeta.textContent = node.dataset.meta;
+      tooltip.style.left = (rect.left - cardRect.left + rect.width / 2) + 'px';
+      tooltip.style.top = (rect.top - cardRect.top) + 'px';
+      tooltip.classList.add('visible');
+      openNode = node;
+    }
+    function hideTooltip(){
+      tooltip.classList.remove('visible');
+      openNode = null;
+    }
+
+    document.querySelectorAll('.node-ic, .node-sapa').forEach(function(node){
+      node.addEventListener('click', function(e){
+        e.stopPropagation();
+        if (openNode === node) { hideTooltip(); } else { showTooltip(node); }
+      });
+      node.addEventListener('keydown', function(e){
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          if (openNode === node) { hideTooltip(); } else { showTooltip(node); }
+        }
+      });
+    });
+    document.addEventListener('click', hideTooltip);
+    window.addEventListener('resize', hideTooltip);
+  })();
+</script>
