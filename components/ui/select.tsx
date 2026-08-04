@@ -6,6 +6,10 @@ import { Select as SelectPrimitive } from "@base-ui/react/select"
 import { cn } from "@/lib/utils"
 import { ChevronDownIcon, CheckIcon, ChevronUpIcon } from "lucide-react"
 
+// Base UI's Select does not auto-derive the trigger's label from SelectItem
+// children (unlike Radix). Pass an `items` prop (array of {value, label})
+// to the Select root, or the trigger will show the raw value string instead
+// of the label. See components/map/AreaSelector.tsx for a working example.
 const Select = SelectPrimitive.Root
 
 function SelectGroup({ className, ...props }: SelectPrimitive.Group.Props) {

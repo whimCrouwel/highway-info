@@ -9,6 +9,10 @@ function Popover({ ...props }: PopoverPrimitive.Root.Props) {
   return <PopoverPrimitive.Root data-slot="popover" {...props} />
 }
 
+// Base UI's PopoverTrigger has no `asChild` prop (unlike Radix). To compose
+// a custom/non-button trigger element, use `render={<Element .../>}` with
+// `nativeButton={false}`. See components/map/NodeMarker.tsx for a working
+// example (an SVG <g> as the trigger).
 function PopoverTrigger({ ...props }: PopoverPrimitive.Trigger.Props) {
   return <PopoverPrimitive.Trigger data-slot="popover-trigger" {...props} />
 }
