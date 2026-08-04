@@ -16,12 +16,16 @@ const ATTRIBUTION =
 // easy to click/tap without needing to hit the exact rendered shape.
 const canvasRenderer = L.canvas({ tolerance: 8 });
 
+// Below this zoom, junction dots are hidden entirely — at a nationwide/
+// regional view they add clutter without being individually useful.
+const JUNCTION_MIN_ZOOM = 8;
+
 function radiusForZoom(zoom: number) {
-  return Math.max(4, Math.min(12, zoom - 2));
+  return Math.max(3, Math.min(11, zoom - JUNCTION_MIN_ZOOM + 3));
 }
 
 function weightForZoom(zoom: number) {
-  return Math.max(2, Math.min(6, (zoom - 4) * 0.6));
+  return Math.max(3, Math.min(7, (zoom - 3) * 0.7));
 }
 
 function toLatLngBounds(bounds: [number, number, number, number]): [[number, number], [number, number]] {
@@ -91,15 +95,22 @@ function LinesLayer({ data }: { data: GeoJSON.GeoJsonObject }) {
 function JunctionsLayer({ data }: { data: GeoJSON.GeoJsonObject }) {
   const map = useMap();
   const layerRef = useRef<L.GeoJSON | null>(null);
+  const [zoom, setZoom] = useState(map.getZoom());
 
-  const applyRadius = (zoom: number) => {
-    const radius = radiusForZoom(zoom);
+  const applyRadius = (z: number) => {
+    const radius = radiusForZoom(z);
     layerRef.current?.eachLayer((layer) => {
       if (layer instanceof L.CircleMarker) layer.setRadius(radius);
     });
   };
 
-  useMapEvent("zoomend", () => applyRadius(map.getZoom()));
+  useMapEvent("zoomend", () => setZoom(map.getZoom()));
+
+  useEffect(() => {
+    applyRadius(zoom);
+  }, [zoom]);
+
+  if (zoom < JUNCTION_MIN_ZOOM) return null;
 
   return (
     <GeoJSON
