@@ -1,30 +1,28 @@
 "use client";
 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { regions } from "./regions";
 
-const AREAS = [
-  { value: "area03", label: "北陸・信越", disabled: false },
-  { value: "area01", label: "北海道（準備中）", disabled: true },
-  { value: "area02", label: "東北（準備中）", disabled: true },
-  { value: "area04", label: "関東（準備中）", disabled: true },
-  { value: "area05", label: "東海（準備中）", disabled: true },
-  { value: "area06", label: "関西（準備中）", disabled: true },
-];
+const REGION_ITEMS = regions.map(({ id, name }) => ({ value: id, label: name }));
 
-const AREA_ITEMS = AREAS.map(({ value, label }) => ({ value, label }));
-
-export function AreaSelector() {
+export function AreaSelector({
+  value,
+  onChange,
+}: {
+  value: string;
+  onChange: (regionId: string) => void;
+}) {
   return (
     <div className="flex items-center gap-2 text-sm text-muted-foreground">
       <label htmlFor="area-selector">エリア</label>
-      <Select items={AREA_ITEMS} defaultValue="area03">
-        <SelectTrigger id="area-selector" className="w-[180px]">
+      <Select items={REGION_ITEMS} value={value} onValueChange={(next) => next && onChange(next)}>
+        <SelectTrigger id="area-selector" className="w-[160px]">
           <SelectValue />
         </SelectTrigger>
         <SelectContent>
-          {AREAS.map((area) => (
-            <SelectItem key={area.value} value={area.value} disabled={area.disabled}>
-              {area.label}
+          {regions.map((region) => (
+            <SelectItem key={region.id} value={region.id}>
+              {region.name}
             </SelectItem>
           ))}
         </SelectContent>
