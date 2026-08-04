@@ -11,11 +11,13 @@ const AREAS = [
   { value: "area06", label: "関西（準備中）", disabled: true },
 ];
 
+const AREA_ITEMS = AREAS.map(({ value, label }) => ({ value, label }));
+
 export function AreaSelector() {
   return (
     <div className="flex items-center gap-2 text-sm text-muted-foreground">
       <label htmlFor="area-selector">エリア</label>
-      <Select defaultValue="area03">
+      <Select items={AREA_ITEMS} defaultValue="area03">
         <SelectTrigger id="area-selector" className="w-[180px]">
           <SelectValue />
         </SelectTrigger>
