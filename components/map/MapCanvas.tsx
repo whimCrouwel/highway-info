@@ -20,7 +20,7 @@ export function MapCanvas({
 
   return (
     <svg
-      viewBox="0 0 1400 700"
+      viewBox="0 0 1450 850"
       role="img"
       aria-label="高速道路の模式図"
       className="block h-full w-full bg-background"

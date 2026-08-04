@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { area03Nodes, area03Routes } from "./data/area03";
 import { useRouteHighlight } from "./useRouteHighlight";
 import { MapCanvas } from "./MapCanvas";
@@ -10,13 +10,11 @@ import { Button } from "@/components/ui/button";
 
 export function OverviewMap() {
   const { activeRouteId, toggleRoute, reset, isDimmed } = useRouteHighlight();
-  const [dark, setDark] = useState(false);
+  const [dark, setDark] = useState(true);
 
-  function toggleDark() {
-    const next = !dark;
-    setDark(next);
-    document.documentElement.classList.toggle("dark", next);
-  }
+  useEffect(() => {
+    document.documentElement.classList.toggle("dark", dark);
+  }, [dark]);
 
   return (
     <div className="relative h-screen w-screen overflow-hidden">
@@ -37,7 +35,7 @@ export function OverviewMap() {
               variant="outline"
               size="icon"
               aria-label={dark ? "ライトモードに切り替え" : "ダークモードに切り替え"}
-              onClick={toggleDark}
+              onClick={() => setDark((d) => !d)}
             >
               {dark ? "☀️" : "🌙"}
             </Button>

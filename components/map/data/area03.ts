@@ -1,7 +1,7 @@
 import type { MapNode, MapRoute } from "../types";
 
 export const area03Nodes: MapNode[] = [
-  // E8 北陸道: 上越JCT -> 金沢西IC
+  // E8 北陸道: 上越JCT -> 米原JCT（実際の起点・終点まで全区間）
   { id: "joetsu-jct", name: "上越JCT", type: "jct", x: 500, y: 150, routeIds: ["e8", "e18"] },
   { id: "itoigawa-ic", name: "糸魚川IC", type: "ic", x: 400, y: 220, routeIds: ["e8"] },
   { id: "asahi-ic", name: "朝日IC", type: "ic", x: 330, y: 270, routeIds: ["e8"] },
@@ -11,9 +11,19 @@ export const area03Nodes: MapNode[] = [
   { id: "kosugi-ic", name: "小杉IC", type: "ic", x: 150, y: 455, routeIds: ["e8"] },
   { id: "takaoka-ic", name: "高岡IC", type: "ic", x: 110, y: 500, routeIds: ["e8"] },
   { id: "kanazawa-morimoto-ic", name: "金沢森本IC", type: "ic", x: 80, y: 555, routeIds: ["e8"] },
-  { id: "kanazawa-nishi-ic", name: "金沢西IC", type: "endpoint", x: 60, y: 610, routeIds: ["e8"] },
+  { id: "kanazawa-nishi-ic", name: "金沢西IC", type: "ic", x: 60, y: 610, routeIds: ["e8"] },
+  { id: "kaga-ic", name: "加賀IC", type: "ic", x: 90, y: 660, routeIds: ["e8"] },
+  { id: "komatsu-ic", name: "小松IC", type: "ic", x: 140, y: 700, routeIds: ["e8"] },
+  { id: "maruoka-ic", name: "丸岡IC", type: "ic", x: 200, y: 730, routeIds: ["e8"] },
+  { id: "fukui-ic", name: "福井IC", type: "ic", x: 270, y: 750, routeIds: ["e8"] },
+  { id: "sabae-ic", name: "鯖江IC", type: "ic", x: 340, y: 760, routeIds: ["e8"] },
+  { id: "takefu-ic", name: "武生IC", type: "ic", x: 410, y: 765, routeIds: ["e8"] },
+  { id: "imajo-ic", name: "今庄IC", type: "ic", x: 480, y: 760, routeIds: ["e8"] },
+  { id: "tsuruga-ic", name: "敦賀IC", type: "ic", x: 550, y: 745, routeIds: ["e8"] },
+  { id: "kinomoto-ic", name: "木之本IC", type: "ic", x: 650, y: 720, routeIds: ["e8"] },
+  { id: "maibara-jct", name: "米原JCT", type: "endpoint", x: 750, y: 700, routeIds: ["e8"] },
 
-  // E18 上信越道: 上越JCT -> 更埴JCT -> 藤岡JCT
+  // E18 上信越道: 上越JCT -> 藤岡JCT（実際の起点・終点）
   { id: "arai-pa", name: "新井PA", type: "pa", x: 560, y: 140, routeIds: ["e18"] },
   { id: "myoko-kogen-ic", name: "妙高高原IC", type: "ic", x: 620, y: 150, routeIds: ["e18"] },
   { id: "shinano-machi-ic", name: "信濃町IC", type: "ic", x: 680, y: 165, routeIds: ["e18"] },
@@ -29,14 +39,14 @@ export const area03Nodes: MapNode[] = [
   { id: "tomioka-ic", name: "富岡IC", type: "ic", x: 1270, y: 130, routeIds: ["e18"] },
   { id: "fujioka-jct", name: "藤岡JCT", type: "endpoint", x: 1320, y: 110, routeIds: ["e18"] },
 
-  // E19 長野道: 更埴JCT -> 岡谷JCT
+  // E19 長野道: 更埴JCT -> 岡谷JCT（実際の起点・終点）
   { id: "omi-ic", name: "麻績IC", type: "ic", x: 830, y: 300, routeIds: ["e19"] },
   { id: "ikusaka-pa", name: "生坂PA", type: "pa", x: 810, y: 350, routeIds: ["e19"] },
   { id: "matsumoto-ic", name: "松本IC", type: "ic", x: 790, y: 410, routeIds: ["e19"] },
   { id: "shiojiri-kita-ic", name: "塩尻北IC", type: "ic", x: 770, y: 460, routeIds: ["e19"] },
   { id: "okaya-jct", name: "岡谷JCT", type: "jct", x: 750, y: 510, routeIds: ["e19", "e67"] },
 
-  // E67 安房峠道路: 岡谷JCT -> 平湯IC
+  // E67 安房峠道路: 岡谷JCT -> 平湯IC（実際の起点・終点）
   { id: "shiojiri-ic", name: "塩尻IC", type: "ic", x: 700, y: 555, routeIds: ["e67"] },
   { id: "nakanoyu-ic", name: "中の湯IC", type: "ic", x: 650, y: 600, routeIds: ["e67"] },
   { id: "hirayu-ic", name: "平湯IC", type: "endpoint", x: 610, y: 640, routeIds: ["e67"] },
@@ -63,14 +73,26 @@ export const area03Routes: MapRoute[] = [
       "takaoka-ic",
       "kanazawa-morimoto-ic",
       "kanazawa-nishi-ic",
+      "kaga-ic",
+      "komatsu-ic",
+      "maruoka-ic",
+      "fukui-ic",
+      "sabae-ic",
+      "takefu-ic",
+      "imajo-ic",
+      "tsuruga-ic",
+      "kinomoto-ic",
+      "maibara-jct",
     ],
     badges: [
       { x: 300, y: 300 },
       { x: 130, y: 478 },
+      { x: 260, y: 720 },
+      { x: 540, y: 775 },
     ],
     directionTags: [
-      { x: 515, y: 133, angleDeg: -90, label: "下り" },
-      { x: 90, y: 588, angleDeg: 180, label: "上り" },
+      { x: 450, y: 205, angleDeg: -135, label: "下り" },
+      { x: 720, y: 740, angleDeg: 200, label: "上り" },
     ],
   },
   {
@@ -100,8 +122,8 @@ export const area03Routes: MapRoute[] = [
       { x: 1080, y: 148 },
     ],
     directionTags: [
-      { x: 480, y: 175, angleDeg: 180, label: "下り" },
-      { x: 1330, y: 105, angleDeg: 0, label: "上り" },
+      { x: 555, y: 195, angleDeg: -20, label: "下り" },
+      { x: 1290, y: 150, angleDeg: 30, label: "上り" },
     ],
   },
   {
@@ -115,8 +137,8 @@ export const area03Routes: MapRoute[] = [
       { x: 790, y: 438 },
     ],
     directionTags: [
-      { x: 855, y: 223, angleDeg: -90, label: "下り" },
-      { x: 760, y: 525, angleDeg: 90, label: "上り" },
+      { x: 900, y: 275, angleDeg: 90, label: "下り" },
+      { x: 700, y: 470, angleDeg: -90, label: "上り" },
     ],
   },
   {
@@ -127,8 +149,8 @@ export const area03Routes: MapRoute[] = [
     path: ["okaya-jct", "shiojiri-ic", "nakanoyu-ic", "hirayu-ic"],
     badges: [{ x: 680, y: 533 }],
     directionTags: [
-      { x: 775, y: 533, angleDeg: 60, label: "下り" },
-      { x: 595, y: 653, angleDeg: 180, label: "上り" },
+      { x: 795, y: 555, angleDeg: 135, label: "下り" },
+      { x: 570, y: 680, angleDeg: 200, label: "上り" },
     ],
   },
 ];

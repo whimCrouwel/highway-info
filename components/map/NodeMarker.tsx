@@ -18,7 +18,14 @@ export function NodeMarker({ node }: { node: MapNode }) {
     return (
       <g transform={`translate(${node.x} ${node.y})`}>
         <circle r={node.type === "jct" ? 8 : 7} className="fill-card stroke-foreground" strokeWidth={2.5} />
-        <text x={12} y={-8} className="fill-foreground text-[13px] font-semibold">
+        <text
+          x={12}
+          y={-8}
+          paintOrder="stroke"
+          className="fill-foreground stroke-background text-[13px] font-semibold"
+          strokeWidth={4}
+          strokeLinejoin="round"
+        >
           {node.name}
         </text>
       </g>
