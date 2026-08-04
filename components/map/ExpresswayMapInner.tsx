@@ -21,7 +21,10 @@ const canvasRenderer = L.canvas({ tolerance: 8 });
 const JUNCTION_MIN_ZOOM = 8;
 
 function radiusForZoom(zoom: number) {
-  return Math.max(3, Math.min(11, zoom - JUNCTION_MIN_ZOOM + 3));
+  // Kept small even at deep zoom: on dense urban interchange clusters
+  // (e.g. 首都高C1, IC spacing under 500m) larger dots overlap each other
+  // and hide the connecting line, making an intact route look broken.
+  return Math.max(2.5, Math.min(6, (zoom - JUNCTION_MIN_ZOOM) * 0.4 + 2.5));
 }
 
 function weightForZoom(zoom: number) {
@@ -85,7 +88,10 @@ function LinesLayer({ data }: { data: GeoJSON.GeoJsonObject }) {
       style={(feature) => ({
         color: (feature?.properties as { color?: string } | undefined)?.color ?? "#3388ff",
         weight: weightForZoom(map.getZoom()),
-        opacity: 0.9,
+        opacity: 1,
+        lineJoin: "round",
+        lineCap: "round",
+        smoothFactor: 0,
       })}
       onEachFeature={onEachLine}
     />
